@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>地舆中国 · 万象博物志 | 丰盈版·三级城廓·含城史</title>
+  <!-- 苹果风格 · 全维度扩展 + 每座城市历史沿革 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+      background: #ffffff; color: #1d1d1f; line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 28px; }
+    section { padding: 80px 0; }
+    .section-title { font-size: 2.5rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 16px; }
+    .section-subhead { font-size: 1.2rem; color: #6e6e73; margin-bottom: 48px; }
+
+    /* 导航栏 · 毛玻璃 + 三级菜单 */
+    .navbar {
+      position: sticky; top: 0; z-index: 500;
+      background: rgba(255,255,255,0.76);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      padding: 10px 0;
+    }
+    .nav-container {
+      display: flex; align-items: center; justify-content: space-between;
+      max-width: 1300px; margin: 0 auto; padding: 0 28px;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 650; font-size: 1.6rem; letter-spacing: -0.02em;
+      color: #1d1d1f; text-decoration: none;
+    }
+    .logo i { color: #0071e3; font-size: 2rem; }
+    .nav-menu { display: flex; gap: 24px; align-items: center; list-style: none; }
+    .nav-item { position: relative; }
+    .nav-link {
+      text-decoration: none; color: #1d1d1f; font-weight: 500;
+      font-size: 0.98rem; padding: 8px 0; display: flex; align-items: center; gap: 6px;
+      transition: color 0.2s; cursor: default;
+    }
+    .nav-link i { font-size: 0.9rem; }
+    .nav-item:hover > .nav-link { color: #0071e3; }
+
+    .dropdown {
+      position: absolute; top: 100%; left: 0; min-width: 360px;
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-radius: 24px; padding: 24px 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 6px 12px rgba(0,0,0,0.02);
+      border: 1px solid rgba(255,255,255,0.6);
+      opacity: 0; visibility: hidden; transform: translateY(8px);
+      transition: all 0.25s ease; pointer-events: none; z-index: 400;
+    }
+    .nav-item:hover > .dropdown { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto; }
+
+    .has-level3 { position: relative; }
+    .level3-trigger {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 12px; border-radius: 14px; text-decoration: none; color: #1d1d1f;
+      font-weight: 500; transition: background 0.15s;
+    }
+    .level3-trigger i { font-size: 0.8rem; color: #86868b; }
+    .level3-trigger:hover { background: rgba(0,113,227,0.06); color: #0071e3; }
+
+    .dropdown-level3 {
+      position: absolute; left: 100%; top: 0; min-width: 240px;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: saturate(180%) blur(20px);
+      border-radius: 20px; padding: 16px 12px;
+      box-shadow: 0 20px 30px rgba(0,0,0,0.08);
+      border: 1px solid rgba(255,255,255,0.7);
+      opacity: 0; visibility: hidden; transform: translateX(6px);
+      transition: all 0.2s ease; pointer-events: none; z-index: 450;
+    }
+    .has-level3:hover .dropdown-level3 { opacity: 1; visibility: visible; transform: translateX(0); pointer-events: auto; }
+
+    .dropdown a, .dropdown-level3 a {
+      display: block; padding: 10px 12px; border-radius: 12px; text-decoration: none;
+      color: #1d1d1f; font-size: 0.95rem; transition: background 0.15s;
+    }
+    .dropdown a:hover, .dropdown-level3 a:hover { background: rgba(0,113,227,0.08); color: #0071e3; }
+    .dropdown a i, .dropdown-level3 a i { width: 20px; color: #0071e3; }
+    .dropdown-title { font-size: 0.75rem; text-transform: uppercase; color: #86868b; margin: 12px 6px 6px; }
+    .dropdown-desc { font-size: 0.8rem; color: #6e6e73; margin-left: 6px; margin-bottom: 8px; }
+
+    .btn {
+      background: #0071e3; color: white; font-weight: 500; padding: 10px 22px;
+      border-radius: 980px; text-decoration: none; transition: 0.2s;
+      box-shadow: 0 2px 8px rgba(0,113,227,0.2);
+    }
+    .btn:hover { background: #0077ed; transform: scale(1.02); }
+    .btn-outline { background: transparent; color: #1d1d1f; border: 1px solid #d2d2d7; box-shadow: none; }
+
+    /* Hero */
+    .hero-wrapper {
+      background: linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,20,40,0.5)), url('https://picsum.photos/id/1015/1600/900') center/cover;
+      min-height: 520px; border-radius: 36px; display: flex; align-items: flex-end;
+      padding: 48px; margin: 0 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    }
+    .hero-content h1 { font-size: 3.5rem; font-weight: 700; color: white; margin-bottom: 16px; text-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+    .hero-content p { font-size: 1.4rem; color: rgba(255,255,255,0.95); margin-bottom: 28px; }
+
+    /* 城市板块网格 */
+    .city-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 28px; margin-top: 32px; }
+    .city-card {
+      background: #ffffff; border-radius: 28px; box-shadow: 0 12px 30px rgba(0,0,0,0.04);
+      padding: 28px; border: 1px solid #f0f0f3; transition: all 0.25s;
+    }
+    .city-card:hover { transform: translateY(-6px); box-shadow: 0 24px 40px rgba(0,0,0,0.06); }
+    .city-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .city-header i { font-size: 2.2rem; color: #0071e3; }
+    .city-name { font-size: 1.7rem; font-weight: 650; }
+    .city-region { color: #6e6e73; font-size: 0.9rem; margin-left: 4px; }
+    .city-detail p { margin: 14px 0; display: flex; gap: 8px; align-items: baseline; }
+    .city-detail i { width: 22px; color: #0071e3; }
+    .badge-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .badge { background: #f5f5f7; padding: 5px 14px; border-radius: 40px; font-size: 0.8rem; }
+
+    .region-divider {
+      margin: 60px 0 30px; font-size: 2rem; font-weight: 600;
+      border-bottom: 1px solid #e8e8ed; padding-bottom: 16px;
+    }
+    .region-divider i { color: #0071e3; margin-right: 12px; }
+
+    /* 丰富板块通用卡片 */
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 24px; }
+    .info-card {
+      background: #fbfbfd; border-radius: 24px; padding: 24px;
+      border: 1px solid #efeff4;
+    }
+    .info-card i { font-size: 2rem; color: #0071e3; margin-bottom: 16px; }
+
+    /* 响应式 */
+    @media (max-width: 1100px) {
+      .nav-container { flex-wrap: wrap; }
+      .nav-menu { order: 3; width: 100%; justify-content: center; margin-top: 12px; gap: 18px; }
+      .dropdown { left: auto; right: 0; }
+      .dropdown-level3 { left: auto; right: 100%; }
+      .city-grid { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 700px) {
+      .city-grid { grid-template-columns: 1fr; }
+      .dropdown-level3 { position: static; box-shadow: none; background: transparent; padding-left: 20px; }
+    }
+    .footer { background: #f5f5f7; padding: 48px 0 32px; margin-top: 40px; }
+    .footer-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 30px; }
+  </style>
+</head>
+<body>
+
+<!-- 导航 · 三级菜单 + 丰富二级 -->
+<header class="navbar">
+  <div class="nav-container">
+    <a href="#" class="logo"><i class="fas fa-globe-asia"></i> 地舆·万象</a>
+    <ul class="nav-menu">
+      <!-- 地理条件 -->
+      <li class="nav-item">
+        <span class="nav-link">地理条件 <i class="fas fa-chevron-down"></i></span>
+        <div class="dropdown">
+          <div class="dropdown-title">🏔️ 地形地貌 · 三级阶梯</div>
+          <div class="dropdown-desc">点击查看详细地貌单元</div>
+          <a href="#geo-qinghai"><i class="fas fa-mountain"></i> 青藏高原</a>
+          <a href="#geo-neimeng"><i class="fas fa-mountain"></i> 内蒙古高原</a>
+          <a href="#geo-huangtu"><i class="fas fa-mountain"></i> 黄土高原</a>
+          <a href="#geo-yungui"><i class="fas fa-mountain"></i> 云贵高原</a>
+          <a href="#geo-dongbei"><i class="fas fa-leaf"></i> 东北平原</a>
+          <a href="#geo-huabei"><i class="fas fa-leaf"></i> 华北平原</a>
+          <a href="#geo-changjiang"><i class="fas fa-leaf"></i> 长江中下游平原</a>
+          <a href="#geo-sichuan"><i class="fas fa-egg"></i> 四川盆地</a>
+          <div class="dropdown-title">☀️ 气候 · 水文 · 资源</div>
+          <a href="#climate-monsoon"><i class="fas fa-cloud-sun"></i> 季风气候带</a>
+          <a href="#river-system"><i class="fas fa-water"></i> 长江/黄河/珠江</a>
+          <a href="#soil-resource"><i class="fas fa-seedling"></i> 土壤与自然资源</a>
+        </div>
+      </li>
+      <!-- 八大门类 -->
+      <li class="nav-item">
+        <span class="nav-link">八大门类 <i class="fas fa-chevron-down"></i></span>
+        <div class="dropdown">
+          <div class="dropdown-title">按主题探索 · 点即达</div>
+          <a href="#cat-nature"><i class="fas fa-tree"></i> 自然风光</a>
+          <a href="#cat-history"><i class="fas fa-landmark"></i> 历史古迹</a>
+          <a href="#cat-folk"><i class="fas fa-mask"></i> 民俗风情</a>
+          <a href="#cat-religion"><i class="fas fa-pray"></i> 宗教文化</a>
+          <a href="#cat-food"><i class="fas fa-utensils"></i> 美食特产</a>
+          <a href="#cat-theme"><i class="fas fa-ticket"></i> 主题公园</a>
+          <a href="#cat-red"><i class="fas fa-flag"></i> 红色旅游</a>
+          <a href="#cat-rural"><i class="fas fa-tractor"></i> 乡村旅游</a>
+        </div>
+      </li>
+      <!-- 八大旅游区 + 三级城市菜单 -->
+      <li class="nav-item">
+        <span class="nav-link">八大旅游区 <i class="fas fa-chevron-down"></i></span>
+        <div class="dropdown" style="min-width: 380px;">
+          <div class="dropdown-title">中国八大综合旅游区 · 点击城市直达</div>
+          <div class="has-level3"><div class="level3-trigger">❄️ 东北 · 冰雪林海 <i class="fas fa-chevron-right"></i></div><div class="dropdown-level3"><a href="#city-haerbin">哈尔滨</a><a href="#city-changchun">长春</a><a href="#city-shenyang">沈阳</a><a href="#city-dalian">大连</a></div></div>
+          <div class="has-level3"><div class="level3-trigger">🏯 华北 · 古都风韵 <i class="fas fa-chevron-right"></i></div><div class="dropdown-level3"><a href="#city-beijing">北京</a><a href="#city-tianjin">天津</a><a href="#city-shijiazhuang">石家庄</a><a href="#city-taiyuan">太原</a></div></div>
+          <div class="has-level3"><div class="level3-trigger">🌊 华东 · 江南水乡 <i class="fas fa-chevron-right"></i></div><div class="dropdown-level3"><a href="#city-shanghai">上海</a><a href="#city-nanjing">南京</a><a href="#city-hangzhou">杭州</a><a href="#city-suzhou">苏州</a></div></div>
+          <div class="has-level3"><div class="level3-trigger">⛰️ 华中 · 山河枢纽 <i class="fas fa-chevron-right"></i></div><div class="dropdown-level3"><a href="#city-zhengzhou">郑州</a><a href="#city-wuhan">武汉</a><a href="#city-changsha">长沙</a></div></div>
+          <div class="has-level3"><div class="level3-trigger">🌴 华南 · 热带风情 <i class="fas fa-chevron-right"></i></div><div class="dropdown-level3"><a href="#city-guangzhou">广州</a><a href="#city-shenzhen">深圳</a><a href="#city-guilin">桂林</a><a href="#city-haikou">海口</a></div></div>
+          <div class="has-level3"><div class="level3-trigger">🦚 西南 · 民族秘境 <i class="fas fa-chevron-right"></i></div><div class="dropdown-level3"><a href="#city-chengdu">成都</a><a href="#city-chongqing">重庆</a><a href="#city-kunming">昆明</a><a href="#city-guiyang">贵阳</a></div></div>
+          <div class="has-level3"><div class="level3-trigger">🐫 西北 · 丝路古道 <i class="fas fa-chevron-right"></i></div><div class="dropdown-level3"><a href="#city-xian">西安</a><a href="#city-lanzhou">兰州</a><a href="#city-xining">西宁</a><a href="#city-wulumuqi">乌鲁木齐</a></div></div>
+          <div class="has-level3"><div class="level3-trigger">🏔️ 青藏 · 世界屋脊 <i class="fas fa-chevron-right"></i></div><div class="dropdown-level3"><a href="#city-lasa">拉萨</a><a href="#city-xining2">西宁(门户)</a><a href="#city-rikaze">日喀则</a></div></div>
+        </div>
+      </li>
+      <!-- 风物人文 -->
+      <li class="nav-item">
+        <span class="nav-link">风物·人文 <i class="fas fa-chevron-down"></i></span>
+        <div class="dropdown">
+          <div class="dropdown-title">地方特产 · 非物质文化遗产</div>
+          <a href="#special-tea"><i class="fas fa-mug-hot"></i> 茶叶</a>
+          <a href="#special-silk"><i class="fas fa-feather"></i> 丝绸刺绣</a>
+          <a href="#special-ceramic"><i class="fas fa-flask"></i> 陶瓷</a>
+          <a href="#special-wine"><i class="fas fa-wine-bottle"></i> 名酒</a>
+          <a href="#special-stationery"><i class="fas fa-pen"></i> 文房四宝</a>
+          <a href="#special-medicine"><i class="fas fa-leaf"></i> 中医药</a>
+          <div class="dropdown-title">人文文化</div>
+          <a href="#culture-confucian"><i class="fas fa-book"></i> 儒家</a>
+          <a href="#culture-taoism"><i class="fas fa-yin-yang"></i> 道家</a>
+          <a href="#culture-buddhism"><i class="fas fa-dharmachakra"></i> 佛教</a>
+          <a href="#culture-minority"><i class="fas fa-users"></i> 少数民族</a>
+        </div>
+      </li>
+    </ul>
+    <div><a href="#" class="btn btn-outline"><i class="far fa-compass"></i> 行旅计划</a></div>
+  </div>
+</header>
+
+<main>
+  <section class="hero" style="padding-top:20px;">
+    <div class="hero-wrapper">
+      <div class="hero-content">
+        <h1>城市经纬·万象中国</h1>
+        <p>三级丰盈菜单 · 八区百城 · 城史尽览</p>
+        <div><a href="#city-section" class="btn"><i class="fas fa-arrow-down"></i> 深入城市版图</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 地理条件深度介绍 -->
+  <section id="geo-anchor" style="padding-top:40px;">
+    <div class="container">
+      <h2 class="section-title">🗺️ 地理条件 · 深度谱系</h2>
+      <div class="info-grid">
+        <div class="info-card" id="geo-qinghai"><i class="fas fa-mountain"></i><h3>青藏高原</h3><p>世界屋脊，平均海拔4500米，冰川广布，亚洲水塔。</p></div>
+        <div class="info-card" id="geo-neimeng"><i class="fas fa-wind"></i><h3>内蒙古高原</h3><p>坦荡开阔，草原、戈壁、沙漠并存，畜牧业基地。</p></div>
+        <div class="info-card" id="geo-huangtu"><i class="fas fa-mound"></i><h3>黄土高原</h3><p>千沟万壑，风成黄土，水土流失治理典范。</p></div>
+        <div class="info-card" id="geo-yungui"><i class="fas fa-water"></i><h3>云贵高原</h3><p>喀斯特王国，峰林溶洞，四季如春。</p></div>
+        <div class="info-card" id="geo-dongbei"><i class="fas fa-tree"></i><h3>东北平原</h3><p>黑土肥沃，中国粮仓，冬季林海雪原。</p></div>
+        <div class="info-card" id="geo-huabei"><i class="fas fa-city"></i><h3>华北平原</h3><p>黄河冲积，华夏文明核心区，人口密集。</p></div>
+        <div class="info-card" id="geo-changjiang"><i class="fas fa-fish"></i><h3>长江中下游平原</h3><p>水网密布，鱼米之乡，经济发达。</p></div>
+        <div class="info-card" id="geo-sichuan"><i class="fas fa-mountain"></i><h3>四川盆地</h3><p>紫色盆地，天府之国，巴蜀文化。</p></div>
+        <div class="info-card" id="climate-monsoon"><i class="fas fa-cloud-rain"></i><h3>季风气候</h3><p>东部季风区、西北干旱区、青藏高寒区。</p></div>
+        <div class="info-card" id="river-system"><i class="fas fa-water"></i><h3>主要河流</h3><p>长江、黄河、珠江、黑龙江等，湖泊众多。</p></div>
+        <div class="info-card" id="soil-resource"><i class="fas fa-gem"></i><h3>土壤与资源</h3><p>黑土、红壤、黄土；矿产、能源、动植物资源丰富。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 八大门类详解 -->
+  <section id="category-section" style="background:#fafafc;">
+    <div class="container">
+      <h2 class="section-title">🧭 八大门类 · 全景体验</h2>
+      <div class="info-grid">
+        <div class="info-card" id="cat-nature"><i class="fas fa-mountain"></i><h3>自然风光</h3><p>九寨沟、黄山、张家界、桂林、三江并流……</p></div>
+        <div class="info-card" id="cat-history"><i class="fas fa-landmark"></i><h3>历史古迹</h3><p>长城、故宫、兵马俑、莫高窟、殷墟……</p></div>
+        <div class="info-card" id="cat-folk"><i class="fas fa-dragon"></i><h3>民俗风情</h3><p>春节、端午、泼水节、那达慕、火把节……</p></div>
+        <div class="info-card" id="cat-religion"><i class="fas fa-pray"></i><h3>宗教文化</h3><p>佛教四大名山、道教洞天福地、著名寺庙宫观。</p></div>
+        <div class="info-card" id="cat-food"><i class="fas fa-utensils"></i><h3>美食特产</h3><p>八大菜系、地方小吃、茶酒文化。</p></div>
+        <div class="info-card" id="cat-theme"><i class="fas fa-ticket-alt"></i><h3>主题公园</h3><p>迪士尼、环球影城、长隆、方特、欢乐谷……</p></div>
+        <div class="info-card" id="cat-red"><i class="fas fa-flag"></i><h3>红色旅游</h3><p>井冈山、延安、遵义、西柏坡、瑞金……</p></div>
+        <div class="info-card" id="cat-rural"><i class="fas fa-tree"></i><h3>乡村旅游</h3><p>婺源、宏村、西江苗寨、元阳梯田、丹巴藏寨。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 城市板块 · 每座城市都新增历史沿革 -->
+  <section id="city-section">
+    <div class="container">
+      <h2 class="section-title">🏙️ 城市博物志 · 一城一史</h2>
+      <div class="section-subhead">三级菜单直达，每座城市皆藏地理密码、人文瑰宝与历史纵深。</div>
+
+      <!-- 东北区 -->
+      <div class="region-divider"><i class="fas fa-snowflake"></i> 东北旅游区 · 冰雪林海</div>
+      <div class="city-grid">
+        <div class="city-card" id="city-haerbin"><div class="city-header"><i class="fas fa-archway"></i><span class="city-name">哈尔滨 <span class="city-region">黑龙江</span></span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>金清两代发祥地，中东铁路枢纽，20世纪初国际商埠，“东方莫斯科”。</p><p><i class="fas fa-map-pin"></i> <strong>必游：</strong>冰雪大世界、中央大街、圣索菲亚教堂、太阳岛</p><p><i class="fas fa-masks-theater"></i> <strong>人文：</strong>欧陆风情、冰雪文化、哈尔滨之夏</p><p><i class="fas fa-utensils"></i> <strong>特产/艺术：</strong>红肠、大列巴、麦秸画、冰雕</p></div><div class="badge-wrap"><span class="badge">东方莫斯科</span><span class="badge">冰城</span></div></div>
+        <div class="city-card" id="city-changchun"><div class="city-header"><i class="fas fa-car"></i><span class="city-name">长春 <span class="city-region">吉林</span></span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>伪满洲国“国都”，新中国汽车工业摇篮，电影之城。</p><p><i class="fas fa-map-pin"></i> 伪满皇宫、净月潭、长影世纪城</p><p><i class="fas fa-masks-theater"></i> 汽车城、电影城、森林城</p><p><i class="fas fa-utensils"></i> 人参、鹿茸、吉菜</p></div></div>
+        <div class="city-card" id="city-shenyang"><div class="city-header"><i class="fas fa-crown"></i><span class="city-name">沈阳 <span class="city-region">辽宁</span></span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>清朝发祥地，盛京皇城，近代工业重镇。</p><p>沈阳故宫、张氏帅府、北陵</p><p>清文化、工业文化、二人转</p><p>老边饺子、羽毛画</p></div></div>
+        <div class="city-card" id="city-dalian"><div class="city-header"><i class="fas fa-umbrella-beach"></i><span class="city-name">大连 <span class="city-region">辽宁</span></span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>近代俄日租借地，重要港口，改革开放首批沿海开放城市。</p><p>星海广场、老虎滩、金石滩</p><p>浪漫海滨、广场文化</p><p>海鲜、贝雕</p></div></div>
+      </div>
+
+      <!-- 华北 -->
+      <div class="region-divider"><i class="fas fa-pagoda"></i> 华北旅游区 · 古都风韵</div>
+      <div class="city-grid">
+        <div class="city-card" id="city-beijing"><div class="city-header"><i class="fas fa-dragon"></i><span class="city-name">北京</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>六朝古都，辽金元明清五代帝都，800余年建都史。</p><p>故宫、长城、天坛、颐和园</p><p>京剧、四合院、烤鸭</p><p>景泰蓝、京剧脸谱</p></div></div>
+        <div class="city-card" id="city-tianjin"><div class="city-header"><i class="fas fa-water"></i><span class="city-name">天津</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>明永乐筑城设卫，近代北方最大通商口岸，九国租界。</p><p>五大道、意风区、古文化街</p><p>相声、码头文化</p><p>狗不理、泥人张</p></div></div>
+        <div class="city-card" id="city-shijiazhuang"><div class="city-header"><i class="fas fa-mountain"></i><span class="city-name">石家庄</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>因铁路而兴的“火车拉来的城市”，西柏坡革命圣地。</p><p>正定古城、赵州桥、西柏坡</p><p>燕赵故地、红色文化</p><p>金凤扒鸡、宫灯</p></div></div>
+        <div class="city-card" id="city-taiyuan"><div class="city-header"><i class="fas fa-chess-board"></i><span class="city-name">太原</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>2500年建城史，九朝古都，晋商发源地之一。</p><p>晋祠、山西博物院、双塔寺</p><p>晋商文化、面食之都</p><p>老陈醋、汾酒、剪纸</p></div></div>
+      </div>
+
+      <!-- 华东 -->
+      <div class="region-divider"><i class="fas fa-bridge-water"></i> 华东旅游区 · 江南水乡</div>
+      <div class="city-grid">
+        <div class="city-card" id="city-shanghai"><div class="city-header"><i class="fas fa-city"></i><span class="city-name">上海</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>1843年开埠，远东第一大都会，中西文化交融。</p><p>外滩、迪士尼、豫园</p><p>海派文化、摩登</p><p>大白兔、顾绣</p></div></div>
+        <div class="city-card" id="city-nanjing"><div class="city-header"><i class="fas fa-leaf"></i><span class="city-name">南京</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>六朝古都，十朝都会，明初都城，民国首都。</p><p>中山陵、夫子庙、玄武湖</p><p>金陵文化、云锦</p><p>盐水鸭、雨花石</p></div></div>
+        <div class="city-card" id="city-hangzhou"><div class="city-header"><i class="fas fa-mountain"></i><span class="city-name">杭州</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>吴越国、南宋都城，七大古都之一，人间天堂。</p><p>西湖、灵隐寺、西溪</p><p>丝绸之府、龙井茶</p><p>杭帮菜、王星记扇子</p></div></div>
+        <div class="city-card" id="city-suzhou"><div class="city-header"><i class="fas fa-pagoda"></i><span class="city-name">苏州</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>2500年建城史，吴文化发祥地，园林之城。</p><p>拙政园、虎丘、平江路</p><p>昆曲、苏绣</p><p>碧螺春、苏式糕点</p></div></div>
+      </div>
+
+      <!-- 华中 -->
+      <div class="region-divider"><i class="fas fa-mountain-sun"></i> 华中旅游区 · 山河枢纽</div>
+      <div class="city-grid">
+        <div class="city-card" id="city-zhengzhou"><div class="city-header"><i class="fas fa-train"></i><span class="city-name">郑州</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>商代早期都城，3600年建城史，八大古都之一。</p><p>少林寺、嵩山、黄河</p><p>商都文化、豫剧</p><p>烩面、少林素饼</p></div></div>
+        <div class="city-card" id="city-wuhan"><div class="city-header"><i class="fas fa-water"></i><span class="city-name">武汉</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>3500年盘龙城遗址，近代洋务运动重镇，首义之城。</p><p>黄鹤楼、东湖、江滩</p><p>荆楚文化、过早</p><p>热干面、汉绣</p></div></div>
+        <div class="city-card" id="city-changsha"><div class="city-header"><i class="fas fa-pepper"></i><span class="city-name">长沙</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>3000年城名未变，楚汉名城，近代革命策源地。</p><p>岳麓山、橘子洲、马王堆</p><p>娱乐之都、湘菜</p><p>臭豆腐、湘绣</p></div></div>
+      </div>
+
+      <!-- 华南 -->
+      <div class="region-divider"><i class="fas fa-palm-tree"></i> 华南旅游区 · 热带风情</div>
+      <div class="city-grid">
+        <div class="city-card" id="city-guangzhou"><div class="city-header"><i class="fas fa-dumpling"></i><span class="city-name">广州</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>2200余年建城史，海上丝绸之路起点，千年商都。</p><p>广州塔、沙面、白云山</p><p>岭南文化、花城</p><p>早茶、广绣、牙雕</p></div></div>
+        <div class="city-card" id="city-shenzhen"><div class="city-header"><i class="fas fa-rocket"></i><span class="city-name">深圳</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>改革开放窗口，从小渔村到国际都市的奇迹。</p><p>世界之窗、华侨城、大小梅沙</p><p>创新之城、设计之都</p><p>荔枝、大芬油画</p></div></div>
+        <div class="city-card" id="city-guilin"><div class="city-header"><i class="fas fa-mountain"></i><span class="city-name">桂林</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>秦代开凿灵渠，宋代为西南都会，山水名城。</p><p>漓江、阳朔、龙脊梯田</p><p>壮族风情、刘三姐</p><p>桂林米粉、山水画</p></div></div>
+        <div class="city-card" id="city-haikou"><div class="city-header"><i class="fas fa-umbrella-beach"></i><span class="city-name">海口</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>宋代开埠，琼州府治，近代海南首府。</p><p>骑楼老街、假日海滩</p><p>椰城、琼剧</p><p>椰子、海南粉</p></div></div>
+      </div>
+
+      <!-- 西南 -->
+      <div class="region-divider"><i class="fas fa-feather"></i> 西南旅游区 · 民族秘境</div>
+      <div class="city-grid">
+        <div class="city-card" id="city-chengdu"><div class="city-header"><i class="fas fa-panda"></i><span class="city-name">成都</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>2300年城名未改，蜀汉都城，天府之国核心。</p><p>大熊猫、宽窄巷子、都江堰</p><p>茶馆、川剧</p><p>火锅、蜀锦</p></div></div>
+        <div class="city-card" id="city-chongqing"><div class="city-header"><i class="fas fa-mountain"></i><span class="city-name">重庆</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>巴渝文化发祥地，抗战陪都，山城江城。</p><p>洪崖洞、磁器口、武隆</p><p>山城、巴渝文化</p><p>火锅底料、漆器</p></div></div>
+        <div class="city-card" id="city-kunming"><div class="city-header"><i class="fas fa-cloud-sun"></i><span class="city-name">昆明</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>古滇国都城，南诏大理东都，春城花都。</p><p>石林、滇池、翠湖</p><p>春城、少数民族</p><p>鲜花饼、云烟</p></div></div>
+        <div class="city-card" id="city-guiyang"><div class="city-header"><i class="fas fa-tree"></i><span class="city-name">贵阳</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>明代设贵阳府，黔中重镇，避暑之都。</p><p>黔灵山、青岩古镇</p><p>避暑之都、苗族</p><p>丝娃娃、蜡染</p></div></div>
+      </div>
+
+      <!-- 西北 -->
+      <div class="region-divider"><i class="fas fa-camel"></i> 西北旅游区 · 丝路古道</div>
+      <div class="city-grid">
+        <div class="city-card" id="city-xian"><div class="city-header"><i class="fas fa-landmark"></i><span class="city-name">西安</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>十三朝古都，3100年建城史，丝绸之路起点。</p><p>兵马俑、大雁塔、城墙</p><p>秦腔、古都文化</p><p>肉夹馍、羊肉泡馍</p></div></div>
+        <div class="city-card" id="city-lanzhou"><div class="city-header"><i class="fas fa-water"></i><span class="city-name">兰州</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>西汉设金城郡，丝路重镇，黄河穿城。</p><p>黄河铁桥、白塔山</p><p>丝路文化、牛肉面</p><p>刻葫芦、百合</p></div></div>
+        <div class="city-card" id="city-xining"><div class="city-header"><i class="fas fa-mosque"></i><span class="city-name">西宁</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>2100年高原古城，唐蕃古道要冲，青藏门户。</p><p>塔尔寺、东关清真寺</p><p>多民族聚居</p><p>酸奶、虫草</p></div></div>
+        <div class="city-card" id="city-wulumuqi"><div class="city-header"><i class="fas fa-mountain"></i><span class="city-name">乌鲁木齐</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>古丝绸之路新北道重镇，亚心之都。</p><p>天山天池、大巴扎</p><p>维吾尔风情</p><p>葡萄干、和田玉</p></div></div>
+      </div>
+
+      <!-- 青藏 -->
+      <div class="region-divider"><i class="fas fa-mountain"></i> 青藏旅游区 · 世界屋脊</div>
+      <div class="city-grid">
+        <div class="city-card" id="city-lasa"><div class="city-header"><i class="fas fa-pray"></i><span class="city-name">拉萨</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>1300余年历史，吐蕃王朝都城，藏传佛教圣地。</p><p>布达拉宫、大昭寺、八廓街</p><p>藏传佛教、雪顿节</p><p>唐卡、藏香</p></div></div>
+        <div class="city-card" id="city-xining2"><div class="city-header"><i class="fas fa-sun"></i><span class="city-name">西宁 (青藏门户)</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>高原古城，唐蕃古道与丝路交汇，青藏铁路起点。</p><p>青海湖、塔尔寺</p><p>多元民族文化</p><p>青稞酒、藏毯</p></div></div>
+        <div class="city-card" id="city-rikaze"><div class="city-header"><i class="fas fa-mountain"></i><span class="city-name">日喀则</span></div><div class="city-detail"><p><i class="fas fa-history"></i> <strong>历史：</strong>后藏中心，班禅驻锡地，600余年历史。</p><p>扎什伦布寺、珠峰大本营</p><p>后藏文化、青稞之乡</p><p>藏刀、银器</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 风物人文 详细区块 -->
+  <section id="special-section" style="background:#fafafc;">
+    <div class="container">
+      <h2 class="section-title">🎁 风物人文 · 物华天宝</h2>
+      <div class="info-grid">
+        <div class="info-card" id="special-tea"><i class="fas fa-mug-hot"></i><h3>茶叶</h3><p>龙井、碧螺春、普洱、铁观音、毛尖、大红袍……</p></div>
+        <div class="info-card" id="special-silk"><i class="fas fa-feather"></i><h3>丝绸刺绣</h3><p>苏绣、湘绣、蜀绣、粤绣、南京云锦</p></div>
+        <div class="info-card" id="special-ceramic"><i class="fas fa-flask"></i><h3>陶瓷</h3><p>景德镇瓷器、宜兴紫砂、龙泉青瓷、德化白瓷</p></div>
+        <div class="info-card" id="special-wine"><i class="fas fa-wine-bottle"></i><h3>名酒</h3><p>茅台、五粮液、汾酒、泸州老窖、洋河大曲</p></div>
+        <div class="info-card" id="special-stationery"><i class="fas fa-pen"></i><h3>文房四宝</h3><p>湖笔、徽墨、宣纸、端砚</p></div>
+        <div class="info-card" id="special-medicine"><i class="fas fa-leaf"></i><h3>中医药</h3><p>人参、鹿茸、虫草、枸杞、三七、阿胶</p></div>
+        <div class="info-card" id="culture-confucian"><i class="fas fa-book"></i><h3>儒家文化</h3><p>曲阜三孔，仁义礼智信，影响深远。</p></div>
+        <div class="info-card" id="culture-taoism"><i class="fas fa-yin-yang"></i><h3>道家文化</h3><p>武当山、青城山，道法自然。</p></div>
+        <div class="info-card" id="culture-buddhism"><i class="fas fa-dharmachakra"></i><h3>佛教圣地</h3><p>五台山、峨眉山、普陀山、九华山。</p></div>
+        <div class="info-card" id="culture-minority"><i class="fas fa-users"></i><h3>少数民族风情</h3><p>56个民族，多彩节日与服饰。</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div><h4>地理条件</h4><ul><li>地形/气候/水文</li></ul></div>
+      <div><h4>八大旅游区</h4><ul><li>东北·华北·华东</li><li>华中·华南·西南</li><li>西北·青藏</li></ul></div>
+      <div><h4>城市版图</h4><ul><li>每城皆含历史</li><li>三级菜单直达</li></ul></div>
+      <div><h4>关注</h4><ul><li>微信公众号</li></ul></div>
+    </div>
+    <div style="margin-top:48px; padding-top:24px; border-top:1px solid #d2d2d7;">© 2026 地舆中国 · 城史版。点击菜单皆可抵达。</div>
+  </div>
+</footer>
+<script>
+  (function(){
+    if ('ontouchstart' in window) {
+      document.querySelectorAll('.has-level3').forEach(el => {
+        el.addEventListener('click', function(e) {
+          const dd = this.querySelector('.dropdown-level3');
+          if(dd) { e.preventDefault(); dd.style.opacity = '1'; dd.style.visibility = 'visible'; dd.style.pointerEvents = 'auto'; }
+        });
+      });
+    }
+  })();
+</script>
+</body>
+</html>
